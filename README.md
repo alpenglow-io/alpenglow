@@ -12,6 +12,3 @@ Configure the following envs for getting to work in `AWS`:
 
 Configure the following envs for getting to work in `DIGITAL OCEAN`:
 * `DIGITALOCEAN_TOKEN` for access token
-
-##
-
