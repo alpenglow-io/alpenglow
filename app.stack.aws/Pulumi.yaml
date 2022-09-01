@@ -1,0 +1,3 @@
+name: app.stack.aws
+runtime: java
+description: demo

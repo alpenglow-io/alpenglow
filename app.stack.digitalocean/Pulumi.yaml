@@ -1,0 +1,3 @@
+name: app.stack.digitalocean
+runtime: java
+description: demo
