@@ -16,3 +16,7 @@ Configure the following envs for getting to work in `DIGITAL OCEAN`:
 ## Repository handled with GiTea, GitLab and GitHub
 
 By following this tutorial: https://steveperkins.com/migrating-projects-from-github-to-gitlab/
+
+## Install instructions for GiTea
+
+Better to do it with Docker: https://docs.gitea.io/en-us/install-with-docker/
