@@ -4,8 +4,9 @@ import com.pulumi.Pulumi;
 import com.pulumi.digitalocean.Project;
 import com.pulumi.digitalocean.ProjectArgs;
 
+enum Namespace implements Main {}
+
 public sealed interface Main {
-  enum Namespace implements Main {}
 
   static void main(String... args) {
     Pulumi.run(digitalOcean -> {

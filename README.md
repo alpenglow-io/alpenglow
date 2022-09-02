@@ -1,4 +1,4 @@
-# app.stack <!-- Need to be changed -->
+# Alpenglow
 
 Experiments for full continuous integration and deployment
 
@@ -12,3 +12,7 @@ Configure the following envs for getting to work in `AWS`:
 
 Configure the following envs for getting to work in `DIGITAL OCEAN`:
 * `DIGITALOCEAN_TOKEN` for access token
+
+## Repository handled with GiTea, GitLab and GitHub
+
+By following this tutorial: https://steveperkins.com/migrating-projects-from-github-to-gitlab/
