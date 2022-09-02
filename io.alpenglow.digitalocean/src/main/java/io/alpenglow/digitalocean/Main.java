@@ -1,4 +1,4 @@
-package app.stack.digitalocean;
+package io.alpenglow.digitalocean;
 
 import com.pulumi.Pulumi;
 import com.pulumi.digitalocean.Project;

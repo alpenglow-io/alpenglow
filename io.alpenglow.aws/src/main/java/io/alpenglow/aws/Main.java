@@ -1,4 +1,4 @@
-package app.stack.aws;
+package io.alpenglow.aws;
 
 import com.pulumi.Pulumi;
 import com.pulumi.aws.ec2.*;
