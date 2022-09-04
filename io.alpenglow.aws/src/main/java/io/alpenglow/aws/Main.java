@@ -18,9 +18,6 @@ enum Namespace implements Main {
 }
 
 public sealed interface Main {
-
-  String RSA_PRIVATE_KEY = "-----BEGIN RSA PRIVATE KEY-----";
-
   static void main(String[] args) {
     Pulumi.run(aws -> {
       final var config = aws.config();
