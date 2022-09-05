@@ -21,6 +21,3 @@ By following this tutorial: https://steveperkins.com/migrating-projects-from-git
 ## Install instructions for GiTea
 
 Better to do it with Docker: https://docs.gitea.io/en-us/install-with-docker/
-
-StLpU/7hirB+lhpckNNAAwmCwLrJiIvvmi0bibAn
-AKIA6J6XFCDB2M5UDQ6S
