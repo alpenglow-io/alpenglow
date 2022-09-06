@@ -18,6 +18,7 @@
   <name>Alpenglow</name>
 
   <properties>
+    <pointless>Hi</pointless>
     <encoding>UTF-8</encoding>
     <java.version>19</java.version>
     <mainClass>io.alpenglow.Main</mainClass>
