@@ -85,12 +85,10 @@ public sealed interface Main {
           .privateKey(PRIVATE_KEY)
           .build();
 
-      var installDocker = command("install-docker", Docker.Companion.install, connection, ec2);
-      var pullMaven = command("pull-maven", "docker pull maven:3-eclipse-temurin-%s".formatted(System.getenv("JDK_VERSION")), connection, installDocker);
+      var upgrade = command("upgrade", "sudo apt update && sudo apt dist-upgrade -y && sudo apt autoremove -y", connection, ec2);
+      var installDocker = command("install-docker", Docker.Companion.install, connection, upgrade);
 
-      aws.export("ec2PublicIP", ec2.publicIp());
       aws.export("ec2PublicDNS", ec2.publicDns());
-      aws.export("dockerInstalled", installDocker.stderr());
     });
   }
 

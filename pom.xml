@@ -3,12 +3,19 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.helidon.applications</groupId>
+    <artifactId>helidon-se</artifactId>
+    <version>3.0.1</version>
+    <relativePath/>
+  </parent>
 
   <groupId>io.alpenglow</groupId>
   <artifactId>io.alpenglow</artifactId>
   <packaging>pom</packaging>
   <version>1.0-SNAPSHOT</version>
   <modules>
+    <module>io.alpenglow.quickstart</module>
     <module>io.alpenglow.aws</module>
     <module>io.alpenglow.digitalocean</module>
     <module>io.alpenglow.service</module>
@@ -18,9 +25,8 @@
   <name>Alpenglow</name>
 
   <properties>
-    <pointless>Hi</pointless>
     <encoding>UTF-8</encoding>
-    <java.version>19</java.version>
+    <java.version>17</java.version>
     <mainClass>io.alpenglow.Main</mainClass>
     <mainArgs/>
     <helidon.version>3.0.1</helidon.version>
