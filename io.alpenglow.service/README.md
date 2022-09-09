@@ -4,20 +4,19 @@ Minimal Helidon SE project suitable to start from scratch.
 
 ## Build and run
 
-
 With JDK17+
+
 ```bash
 mvn package
 java -jar target/io.alpenglow.webapp.jar
 ```
 
 ## Exercise the application
+
 ```
 curl -X GET http://localhost:8080/simple-greet
 {"message":"Hello World!"}
 ```
-
-
 
 ## Building a Native Image
 
@@ -42,8 +41,8 @@ Once it completes start the application using the native executable (no JVM!):
 
 Yep, it starts fast. You can exercise the application’s endpoints as before.
 
-
 ## Building the Docker Image
+
 ```
 docker build -t io.alpenglow.webapp .
 ```
@@ -55,4 +54,4 @@ docker run --rm -p 8080:8080 io.alpenglow.webapp:latest
 ```
 
 Exercise the application as described above.
-                                
+

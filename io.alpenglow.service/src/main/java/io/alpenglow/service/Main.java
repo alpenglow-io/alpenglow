@@ -1,12 +1,12 @@
-package io.alpenglow;
+package io.alpenglow.service;
 
-import io.alpenglow.service.HttpServer;
 import io.helidon.common.LogConfig;
 import io.helidon.config.Config;
 
 import java.util.logging.Logger;
 
-public enum Main {;
+public enum Main {
+  ;
   private static final Logger log = Logger.getLogger(Main.class.getSimpleName());
 
   static void main(String... args) {

@@ -1,8 +1,6 @@
 package io.alpenglow.aws;
 
 import com.pulumi.Pulumi;
-import com.pulumi.aws.appstream.ImageBuilder;
-import com.pulumi.aws.appstream.ImageBuilderArgs;
 import com.pulumi.aws.ec2.*;
 import com.pulumi.aws.ec2.inputs.DefaultSecurityGroupEgressArgs;
 import com.pulumi.aws.ec2.inputs.DefaultSecurityGroupIngressArgs;
@@ -11,8 +9,6 @@ import com.pulumi.command.remote.CommandArgs;
 import com.pulumi.command.remote.inputs.ConnectionArgs;
 import com.pulumi.resources.CustomResourceOptions;
 import com.pulumi.resources.Resource;
-import com.pulumi.resources.StackReference;
-import com.pulumi.resources.StackReferenceArgs;
 
 import java.util.List;
 

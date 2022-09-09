@@ -4,14 +4,15 @@ Sample Helidon SE project that includes multiple REST operations.
 
 ## Build and run
 
-
 With JDK17+
+
 ```bash
 mvn package
 java -jar target/io.alpenglow.quickstart.jar
 ```
 
 ## Exercise the application
+
 ```
 curl -X GET http://localhost:8080/simple-greet
 {"message":"Hello World!"}
@@ -30,8 +31,6 @@ curl -X GET http://localhost:8080/greet/Jose
 {"message":"Hola Jose!"}
 ```
 
-
-
 ## Try metrics
 
 ```
@@ -46,8 +45,6 @@ curl -H 'Accept: application/json' -X GET http://localhost:8080/metrics
 . . .
 ```
 
-
-
 ## Try health
 
 ```
@@ -55,8 +52,6 @@ curl -s -X GET http://localhost:8080/health
 {"outcome":"UP",...
 
 ```
-
-
 
 ## Building a Native Image
 
@@ -81,8 +76,8 @@ Once it completes start the application using the native executable (no JVM!):
 
 Yep, it starts fast. You can exercise the application’s endpoints as before.
 
-
 ## Building the Docker Image
+
 ```
 docker build -t io.alpenglow.quickstart .
 ```
@@ -94,7 +89,6 @@ docker run --rm -p 8080:8080 io.alpenglow.quickstart:latest
 ```
 
 Exercise the application as described above.
-                                
 
 ## Building a Custom Runtime Image
 
@@ -129,4 +123,4 @@ mvn package -Pjlink-image -Djlink.image.addClassDataSharingArchive=false
 ```
 
 For more information on available configuration options see the helidon-maven-plugin documentation.
-                                
+

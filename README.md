@@ -5,6 +5,7 @@ Experiments for full continuous integration and deployment
 ## Settings:
 
 Configure the following envs for getting to work in `AWS`:
+
 * `LOCAL_PUBLICKEY` for the SSH public-key
 * `LOCAL_PRIVATEKEY` for the SSH public-key
 * `AWS_REGION` for deployment zone area
@@ -12,6 +13,7 @@ Configure the following envs for getting to work in `AWS`:
 * `AWS_ACCESS_KEY_ID` for access key
 
 Configure the following envs for getting to work in `DIGITAL OCEAN`:
+
 * `DIGITALOCEAN_TOKEN` for access token
 
 ## Repository handled with GiTea, GitLab and GitHub

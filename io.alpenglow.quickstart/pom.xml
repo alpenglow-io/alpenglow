@@ -3,7 +3,7 @@
   <parent>
     <groupId>io.alpenglow</groupId>
     <artifactId>io.alpenglow</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -77,11 +77,6 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-release-plugin</artifactId>
-        <version>3.0.0-M1</version>
-      </plugin>
-      <plugin>
         <groupId>io.helidon.build-tools</groupId>
         <artifactId>helidon-maven-plugin</artifactId>
         <executions>
@@ -101,7 +96,7 @@
               <goal>build</goal>
               <goal>push</goal>
             </goals>
-            <phase>site-deploy</phase>
+            <phase>none</phase>
           </execution>
         </executions>
         <configuration>
