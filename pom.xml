@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>io.helidon.applications</groupId>
     <artifactId>helidon-se</artifactId>
     <version>3.0.1</version>
-    <relativePath/>
+    <relativePath />
   </parent>
 
   <groupId>io.alpenglow</groupId>
   <artifactId>io.alpenglow</artifactId>
   <packaging>pom</packaging>
-  <version>1.0</version>
+  <version>1.1-SNAPSHOT</version>
   <modules>
     <module>io.alpenglow.quickstart</module>
     <module>io.alpenglow.aws</module>
@@ -27,7 +26,7 @@
     <connection>scm:git:git@github.com:alpenglow-io/alpenglow.git</connection>
     <developerConnection>scm:git:git@github.com:alpenglow-io/alpenglow.git</developerConnection>
     <url>git@github.com:alpenglow-io/alpenglow.git</url>
-    <tag>io.alpenglow-1.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <properties>
@@ -40,8 +39,8 @@
     <gitlab.registry>https://gitlab.com/api/v4/</gitlab.registry>
     <gitlab.project>39075944</gitlab.project>
 
-    <mainClass/>
-    <mainArgs/>
+    <mainClass />
+    <mainArgs />
     <helidon.version>3.0.1</helidon.version>
   </properties>
 
