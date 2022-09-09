@@ -15,11 +15,20 @@
   <artifactId>io.alpenglow.quickstart</artifactId>
   <version>1.0-SNAPSHOT</version>
 
+  <scm>
+    <connection>scm:git:git@github.com:alpenglow-io/alpenglow.git</connection>
+    <developerConnection>scm:git:git@github.com:alpenglow-io/alpenglow.git</developerConnection>
+    <url>git@github.com:alpenglow-io/alpenglow.git</url>
+  </scm>
+
   <properties>
     <maven.compiler.target>17</maven.compiler.target>
     <maven.compiler.release>17</maven.compiler.release>
     <maven.compiler.args/>
     <mainClass>io.alpenglow.quickstart.Main</mainClass>
+
+    <gitlab.registry>https://gitlab.com/api/v4/</gitlab.registry>
+    <gitlab.project>39075944</gitlab.project>
   </properties>
 
   <dependencies>
@@ -67,6 +76,24 @@
     </dependency>
   </dependencies>
 
+  <repositories>
+    <repository>
+      <id>gitlab-maven</id>
+      <url>${gitlab.registry}/projects/${gitlab.project}/packages/maven</url>
+    </repository>
+  </repositories>
+  <distributionManagement>
+    <repository>
+      <id>gitlab-maven</id>
+      <url>${gitlab.registry}/projects/${gitlab.project}/packages/maven</url>
+    </repository>
+    <snapshotRepository>
+      <id>gitlab-maven</id>
+      <url>${gitlab.registry}/projects/${gitlab.project}/packages/maven</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+
   <build>
     <plugins>
       <plugin>
@@ -77,6 +104,11 @@
             <id>copy-libs</id>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>3.0.0-M1</version>
       </plugin>
       <plugin>
         <groupId>io.helidon.build-tools</groupId>
@@ -98,7 +130,7 @@
               <goal>build</goal>
               <goal>push</goal>
             </goals>
-            <phase>deploy</phase>
+            <phase>site-deploy</phase>
           </execution>
         </executions>
         <configuration>
@@ -135,10 +167,10 @@
           </extraDirectories>
           <container>
             <entrypoint>/quickstart/bin/start</entrypoint>
+            <ports>
+              <port>8080</port>
+            </ports>
           </container>
-          <ports>
-            <port>8080</port>
-          </ports>
         </configuration>
       </plugin>
     </plugins>
