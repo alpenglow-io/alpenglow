@@ -38,7 +38,6 @@ public final class Main {
    * @return the created {@link WebServer} instance
    */
   static Single<WebServer> startServer() {
-
     // load logging configuration
     LogConfig.configureRuntime();
 

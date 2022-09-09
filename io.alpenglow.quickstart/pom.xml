@@ -7,6 +7,7 @@
     <artifactId>io.alpenglow</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
+
   <modelVersion>4.0.0</modelVersion>
 
   <name>Quickstart</name>
@@ -15,6 +16,9 @@
   <version>1.0-SNAPSHOT</version>
 
   <properties>
+    <maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.release>17</maven.compiler.release>
+    <maven.compiler.args/>
     <mainClass>io.alpenglow.quickstart.Main</mainClass>
   </properties>
 
@@ -82,6 +86,60 @@
             <id>third-party-license-report</id>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>io.fabric8</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <version>0.40.2</version>
+        <executions>
+          <execution>
+            <id>build-up</id>
+            <goals>
+              <goal>build</goal>
+              <goal>push</goal>
+            </goals>
+            <phase>deploy</phase>
+          </execution>
+        </executions>
+        <configuration>
+          <images>
+            <image>
+              <name>${env.DOCKER_REGISTRY}io.alpenglow.quickstart</name>
+            </image>
+          </images>
+          <authConfig>
+            <username>${env.DOCKER_USERNAME}</username>
+            <password>${env.DOCKER_TOKEN}</password>
+          </authConfig>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.google.cloud.tools</groupId>
+        <artifactId>jib-maven-plugin</artifactId>
+        <version>3.3.0</version>
+        <configuration>
+          <to>
+            <image>${env.DOCKER_REGISTRY}io.alpenglow.quickstart</image>
+            <auth>
+              <username>${env.DOCKER_USERNAME}</username>
+              <password>${env.DOCKER_TOKEN}</password>
+            </auth>
+          </to>
+          <extraDirectories>
+            <paths>
+              <path>
+                <from>./target/io.alpenglow.quickstart-jri</from>
+                <into>/quickstart</into>
+              </path>
+            </paths>
+          </extraDirectories>
+          <container>
+            <entrypoint>/quickstart/bin/start</entrypoint>
+          </container>
+          <ports>
+            <port>8080</port>
+          </ports>
+        </configuration>
       </plugin>
     </plugins>
   </build>
