@@ -17,6 +17,7 @@
     <module>io.alpenglow.aws</module>
     <module>io.alpenglow.digitalocean</module>
     <module>io.alpenglow.service</module>
+    <module>io.alpenglow.webapp</module>
   </modules>
 
   <name>Alpenglow</name>
@@ -31,10 +32,16 @@
   <properties>
     <encoding>UTF-8</encoding>
     <java.version>19</java.version>
+
+    <!-- Maven configurations -->
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <maven.compiler.release>${java.version}</maven.compiler.release>
     <maven.compiler.args>--enable-preview</maven.compiler.args>
+    <maven.javadoc.skip>true</maven.javadoc.skip>
+    <maven.source.skipSource>true</maven.source.skipSource>
+    <maven.assembly.skipAssembly>true</maven.assembly.skipAssembly>
+
     <gitlab.registry>https://gitlab.com/api/v4/</gitlab.registry>
     <gitlab.project>39075944</gitlab.project>
 

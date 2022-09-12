@@ -27,5 +27,6 @@ replay_pid*
 **/target
 .idea
 *.iml
+**/node
 
 
