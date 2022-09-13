@@ -21,6 +21,7 @@
     <dependency>
       <groupId>com.pulumi</groupId>
       <artifactId>digitalocean</artifactId>
+      <version>4.15.2</version>
     </dependency>
   </dependencies>
 

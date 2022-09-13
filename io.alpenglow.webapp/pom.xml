@@ -13,7 +13,7 @@
   <artifactId>io.alpenglow.webapp</artifactId>
 
   <properties>
-    <frontend-plugin.version>1.11.2</frontend-plugin.version>
+    <frontend-plugin.version>1.11.3</frontend-plugin.version>
     <node.version>18.9.0</node.version>
   </properties>
 
@@ -31,9 +31,18 @@
             <id>nodejs-install</id>
             <goals>
               <goal>install-node-and-npm</goal>
-              <goal>npm</goal>
             </goals>
             <phase>initialize</phase>
+          </execution>
+          <execution>
+            <id>build</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <phase>package</phase>
+            <configuration>
+              <arguments>run build</arguments>
+            </configuration>
           </execution>
         </executions>
       </plugin>

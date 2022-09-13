@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <groupId>io.alpenglow</groupId>
     <artifactId>io.alpenglow</artifactId>
@@ -17,13 +18,29 @@
   <dependencies>
     <dependency>
       <groupId>com.pulumi</groupId>
+      <artifactId>pulumi</artifactId>
+      <version>0.5.4</version>
+      <exclusions>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-netty-shaded</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.pulumi</groupId>
       <artifactId>aws</artifactId>
+      <version>5.13.0</version>
     </dependency>
     <dependency>
       <groupId>com.pulumi</groupId>
       <artifactId>command</artifactId>
       <version>4.5.0</version>
     </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-netty</artifactId>
+      <version>1.49.0</version>
+    </dependency>
   </dependencies>
-
 </project>

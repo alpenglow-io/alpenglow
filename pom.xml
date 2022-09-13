@@ -1,23 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>io.helidon.applications</groupId>
-    <artifactId>helidon-se</artifactId>
-    <version>3.0.1</version>
-    <relativePath />
-  </parent>
 
   <groupId>io.alpenglow</groupId>
   <artifactId>io.alpenglow</artifactId>
   <packaging>pom</packaging>
   <version>1.1-SNAPSHOT</version>
   <modules>
-    <module>io.alpenglow.quickstart</module>
-    <module>io.alpenglow.aws</module>
-    <module>io.alpenglow.digitalocean</module>
-    <module>io.alpenglow.service</module>
     <module>io.alpenglow.webapp</module>
+    <module>io.alpenglow.quickstart</module>
+    <module>io.alpenglow.service</module>
+    <module>io.alpenglow.digitalocean</module>
+    <module>io.alpenglow.aws</module>
   </modules>
 
   <name>Alpenglow</name>
@@ -45,22 +39,19 @@
     <gitlab.registry>https://gitlab.com/api/v4/</gitlab.registry>
     <gitlab.project>39075944</gitlab.project>
 
-    <mainClass />
-    <mainArgs />
+    <mainClass/>
+    <mainArgs/>
     <helidon.version>3.0.1</helidon.version>
   </properties>
 
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>com.pulumi</groupId>
-        <artifactId>aws</artifactId>
-        <version>5.13.0</version>
-      </dependency>
-      <dependency>
-        <groupId>com.pulumi</groupId>
-        <artifactId>digitalocean</artifactId>
-        <version>4.15.1</version>
+        <groupId>io.helidon.applications</groupId>
+        <artifactId>helidon-se</artifactId>
+        <version>3.0.1</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>io.helidon</groupId>
@@ -73,11 +64,6 @@
   </dependencyManagement>
 
   <dependencies>
-    <dependency>
-      <groupId>com.pulumi</groupId>
-      <artifactId>pulumi</artifactId>
-      <version>0.5.4</version>
-    </dependency>
   </dependencies>
 
   <build>
@@ -109,7 +95,6 @@
         <artifactId>maven-assembly-plugin</artifactId>
         <version>3.3.0</version>
         <configuration>
-          <skipAssembly>true</skipAssembly>
           <archive>
             <manifest>
               <addClasspath>true</addClasspath>
