@@ -36,8 +36,8 @@
     <maven.source.skipSource>true</maven.source.skipSource>
     <maven.assembly.skipAssembly>true</maven.assembly.skipAssembly>
 
-    <gitlab.registry>https://gitlab.com/api/v4/</gitlab.registry>
     <gitlab.project>39075944</gitlab.project>
+    <gitlab.registry>https://gitlab.com/api/v4/projects/${gitlab.project}/packages/maven</gitlab.registry>
 
     <mainClass/>
     <mainArgs/>
@@ -164,18 +164,17 @@
   <repositories>
     <repository>
       <id>gitlab-maven</id>
-      <url>${gitlab.registry}/projects/${gitlab.project}/packages/maven</url>
+      <url>${gitlab.registry}</url>
     </repository>
   </repositories>
   <distributionManagement>
     <repository>
       <id>gitlab-maven</id>
-      <url>${gitlab.registry}/projects/${gitlab.project}/packages/maven</url>
+      <url>${gitlab.registry}</url>
     </repository>
     <snapshotRepository>
       <id>gitlab-maven</id>
-      <url>${gitlab.registry}/projects/${gitlab.project}/packages/maven</url>
+      <url>${gitlab.registry}</url>
     </snapshotRepository>
   </distributionManagement>
-
 </project>
