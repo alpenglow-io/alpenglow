@@ -12,6 +12,7 @@
     <module>io.alpenglow.service</module>
     <module>io.alpenglow.digitalocean</module>
     <module>io.alpenglow.aws</module>
+    <module>io.alpenglow.library</module>
   </modules>
 
   <name>Alpenglow</name>
