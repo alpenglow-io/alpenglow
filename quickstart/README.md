@@ -8,7 +8,7 @@ With JDK17+
 
 ```bash
 mvn package
-java -jar target/io.alpenglow.quickstart.jar
+java -jar target/quickstart.jar
 ```
 
 ## Exercise the application

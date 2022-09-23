@@ -4,7 +4,11 @@ import io.helidon.media.jackson.JacksonSupport;
 import io.helidon.webclient.WebClient;
 import io.helidon.webclient.WebClientResponse;
 import io.helidon.webserver.WebServer;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import java.util.concurrent.TimeUnit;
 
@@ -13,7 +17,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 
 @TestMethodOrder(MethodOrderer.MethodName.class)
-public class MainTest {
+class MainTest {
 
 
   private static WebServer webServer;
@@ -21,6 +25,7 @@ public class MainTest {
 
   @BeforeAll
   public static void startTheServer() {
+    System.out.println("Hello!");
     webServer = Main.startServer().await();
 
     webClient = WebClient.builder()
@@ -40,7 +45,7 @@ public class MainTest {
 
 
   @Test
-  public void testMicroprofileMetrics() {
+  void testMicroprofileMetrics() {
     String get = webClient.get()
       .path("/simple-greet/greet-count")
       .request(String.class)
@@ -57,7 +62,7 @@ public class MainTest {
   }
 
   @Test
-  public void testMetrics() throws Exception {
+  void testMetrics() throws Exception {
     WebClientResponse response = webClient.get()
       .path("/metrics")
       .request()
@@ -66,7 +71,7 @@ public class MainTest {
   }
 
   @Test
-  public void testHealth() throws Exception {
+  void testHealth() throws Exception {
     WebClientResponse response = webClient.get()
       .path("health")
       .request()
@@ -75,7 +80,7 @@ public class MainTest {
   }
 
   @Test
-  public void testSimpleGreet() {
+  void testSimpleGreet() {
     Message json = webClient.get()
       .path("/simple-greet")
       .request(Message.class)
@@ -84,7 +89,7 @@ public class MainTest {
   }
 
   @Test
-  public void testGreetings() {
+  void testGreetings() {
     Message json;
     WebClientResponse response;
 
