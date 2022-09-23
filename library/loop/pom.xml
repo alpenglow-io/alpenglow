@@ -3,18 +3,26 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>io.alpenglow.library</artifactId>
-    <groupId>io.alpenglow</groupId>
+    <groupId>io.alpenglow.library</groupId>
+    <artifactId>library</artifactId>
     <version>1.1-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>io.alpenglow.library.loop</artifactId>
+  <artifactId>loop</artifactId>
 
   <properties>
     <maven.compiler.source>19</maven.compiler.source>
     <maven.compiler.target>19</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.eclipse.persistence</groupId>
+      <artifactId>eclipselink</artifactId>
+      <version>4.0.0-RC2</version>
+    </dependency>
+  </dependencies>
 
 </project>

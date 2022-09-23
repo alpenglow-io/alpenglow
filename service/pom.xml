@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>io.alpenglow</groupId>
-    <artifactId>io.alpenglow</artifactId>
+    <artifactId>alpenglow</artifactId>
     <version>1.1-SNAPSHOT</version>
   </parent>
 

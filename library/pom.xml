@@ -3,18 +3,19 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>io.alpenglow</artifactId>
     <groupId>io.alpenglow</groupId>
+    <artifactId>alpenglow</artifactId>
     <version>1.1-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-
-  <artifactId>io.alpenglow.library</artifactId>
+  <groupId>io.alpenglow.library</groupId>
+  <artifactId>library</artifactId>
   <packaging>pom</packaging>
+  <version>1.1-SNAPSHOT</version>
   <modules>
-    <module>io.alpenglow.library.loop</module>
-    <module>io.alpenglow.library.dop</module>
-    <module>io.alpenglow.library.coop</module>
+    <module>loop</module>
+    <module>dop</module>
+    <module>coop</module>
   </modules>
 
   <properties>
