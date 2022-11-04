@@ -13,6 +13,7 @@
     <module>digitalocean</module>
     <module>aws</module>
     <module>library</module>
+    <module>loom</module>
   </modules>
 
   <name>Alpenglow</name>

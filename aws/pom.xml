@@ -9,22 +9,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <name>Application Stack with AWS</name>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>19</source>
-          <target>19</target>
-          <compilerArgs>--enable-preview</compilerArgs>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
   <artifactId>io.alpenglow.aws</artifactId>
 
   <properties>
+    <maven.compiler.args/>
+
     <mainClass>io.alpenglow.aws.Main</mainClass>
   </properties>
 
@@ -56,4 +45,19 @@
       <version>1.50.0</version>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.10.1</version>
+        <configuration>
+          <forceJavacCompilerUse>true</forceJavacCompilerUse>
+          <source>19</source>
+          <target>19</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

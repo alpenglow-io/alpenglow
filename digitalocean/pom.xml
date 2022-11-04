@@ -8,33 +8,23 @@
   <modelVersion>4.0.0</modelVersion>
 
   <name>Alpenglow Stack with Digital Ocean</name>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>19</source>
-          <target>19</target>
-          <compilerArgs>--enable-preview</compilerArgs>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
   <artifactId>io.alpenglow.digitalocean</artifactId>
 
   <properties>
-    <maven.compiler.source>19</maven.compiler.source>
-    <maven.compiler.target>19</maven.compiler.target>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.args></maven.compiler.args>
     <mainClass>io.alpenglow.digitalocean.Main</mainClass>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>com.pulumi</groupId>
+      <artifactId>pulumi</artifactId>
+      <version>0.6.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.pulumi</groupId>
       <artifactId>digitalocean</artifactId>
-      <version>4.15.2</version>
+      <version>4.16.0</version>
     </dependency>
   </dependencies>
 
