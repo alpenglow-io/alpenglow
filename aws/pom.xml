@@ -9,6 +9,19 @@
   <modelVersion>4.0.0</modelVersion>
 
   <name>Application Stack with AWS</name>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>19</source>
+          <target>19</target>
+          <compilerArgs>--enable-preview</compilerArgs>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
   <artifactId>io.alpenglow.aws</artifactId>
 
   <properties>
@@ -19,7 +32,7 @@
     <dependency>
       <groupId>com.pulumi</groupId>
       <artifactId>pulumi</artifactId>
-      <version>0.5.4</version>
+      <version>0.6.0</version>
       <exclusions>
         <exclusion>
           <groupId>io.grpc</groupId>
@@ -30,7 +43,7 @@
     <dependency>
       <groupId>com.pulumi</groupId>
       <artifactId>aws</artifactId>
-      <version>5.13.0</version>
+      <version>5.16.2</version>
     </dependency>
     <dependency>
       <groupId>com.pulumi</groupId>
@@ -40,7 +53,7 @@
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-netty</artifactId>
-      <version>1.49.0</version>
+      <version>1.50.0</version>
     </dependency>
   </dependencies>
 </project>

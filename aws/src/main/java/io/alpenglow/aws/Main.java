@@ -60,6 +60,9 @@ public sealed interface Main {
               .cidrBlocks("0.0.0.0/0")
               .build()
           )
+          .build(),
+        CustomResourceOptions.builder()
+          .dependsOn(vpc)
           .build()
       );
 
