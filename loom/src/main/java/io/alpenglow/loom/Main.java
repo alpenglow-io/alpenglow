@@ -1,7 +1,7 @@
 package io.alpenglow.loom;
 
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.LockSupport;
 
 import static java.lang.System.currentTimeMillis;
 import static java.lang.System.out;
@@ -22,22 +22,18 @@ interface Sneaky extends Runnable {
 
 interface Main {
   static void main(String[] args) {
-    try (final var tasks = Executors.newVirtualThreadPerTaskExecutor()) {
-      for (int tries = 0; tries < 10; tries++) {
-        out.printf("Try number %s%n", tries + 1);
-        var now = System.currentTimeMillis();
-
-        for (int threads = 0; threads < 1_000_000; threads++) {
-          tasks.submit((Sneaky) () -> Thread.sleep(1000));
+    for (int tries = 0; tries < 30; tries++) {
+      final var mills = currentTimeMillis();
+      try (final var tasks = Executors.newVirtualThreadPerTaskExecutor()) {
+        for (int index = 0; index < 1_000_000; index++) {
+          tasks.submit((Sneaky) () -> LockSupport.parkNanos(1_000_000_000L));
         }
-
-        out.printf("Elapsed time: %s%n", currentTimeMillis() - now);
+        tasks.shutdown();
+        tasks.awaitTermination(1, HOURS);
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
       }
-
-      tasks.shutdown();
-      tasks.awaitTermination(1, HOURS);
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
+      out.printf("Total: %s%n", currentTimeMillis() - mills);
     }
   }
 }
