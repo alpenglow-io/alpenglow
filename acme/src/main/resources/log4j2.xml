@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+  <Appenders>
+    <Console name="InfoConsole" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{YYYY-MM-dd HH:mm:ss} [%t] %-5p %c{1}:%L - %msg%n"/>
+      <LevelRangeFilter minLevel="INFO" maxLevel="INFO" onMatch="ACCEPT"/>
+    </Console>
+    <Console name="WarnConsole" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{YYYY-MM-dd HH:mm:ss} [%t] %-5p %c{1}:%L - %msg%n"/>
+      <LevelRangeFilter minLevel="WARN" maxLevel="WARN" onMatch="ACCEPT"/>
+    </Console>
+    <Console name="ErrorConsole" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{YYYY-MM-dd HH:mm:ss} [%t] %-5p %c{1}:%L - %msg%n"/>
+      <LevelRangeFilter minLevel="ERROR" maxLevel="ERROR" onMatch="ACCEPT"/>
+    </Console>
+    <RollingFile name="RollingFile" filename="/tmp/offloading-metrics.log"
+                 filepattern="logs/%d{YYYYMMddHHmmss}-offloading-metrics.log">
+      <PatternLayout pattern="%d{YYYY-MM-dd HH:mm:ss} [%t] %-5p %c{1}:%L - %msg%n"/>
+      <Policies>
+        <SizeBasedTriggeringPolicy size="100 MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="20"/>
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Root level="INFO">
+      <AppenderRef ref="InfoConsole"/>
+      <AppenderRef ref="WarnConsole"/>
+      <AppenderRef ref="ErrorConsole"/>
+    </Root>
+  </Loggers>
+</Configuration>

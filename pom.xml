@@ -14,6 +14,7 @@
     <module>aws</module>
     <module>library</module>
     <module>loom</module>
+    <module>acme</module>
   </modules>
 
   <name>Alpenglow</name>
