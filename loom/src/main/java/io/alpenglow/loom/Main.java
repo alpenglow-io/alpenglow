@@ -25,7 +25,7 @@ interface Main {
     for (int tries = 0; tries < 30; tries++) {
       final var mills = currentTimeMillis();
       try (final var tasks = Executors.newVirtualThreadPerTaskExecutor()) {
-        for (int index = 0; index < 1_000_000; index++) {
+        for (int index = 0; index < 10_000_000; index++) {
           tasks.submit((Sneaky) () -> LockSupport.parkNanos(1_000_000_000L));
         }
         tasks.shutdown();

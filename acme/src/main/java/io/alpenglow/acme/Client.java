@@ -1,8 +1,13 @@
 package io.alpenglow.acme;
 
-import org.apache.logging.log4j.core.impl.ThreadContextDataInjector;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.shredzone.acme4j.*;
+import org.shredzone.acme4j.Account;
+import org.shredzone.acme4j.AccountBuilder;
+import org.shredzone.acme4j.Authorization;
+import org.shredzone.acme4j.Certificate;
+import org.shredzone.acme4j.Order;
+import org.shredzone.acme4j.Session;
+import org.shredzone.acme4j.Status;
 import org.shredzone.acme4j.challenge.Challenge;
 import org.shredzone.acme4j.challenge.Dns01Challenge;
 import org.shredzone.acme4j.challenge.Http01Challenge;
@@ -13,34 +18,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.net.URI;
 import java.security.KeyPair;
 import java.security.Security;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
+
 public interface Client {
-  // File name of the User Key Pair
-  static final File USER_KEY_FILE = new File("user.key");
-
-  // File name of the Domain Key Pair
-  static final File DOMAIN_KEY_FILE = new File("domain.key");
-
-  // File name of the CSR
-  static final File DOMAIN_CSR_FILE = new File("domain.csr");
-
-  // File name of the signed certificate
-  static final File DOMAIN_CHAIN_FILE = new File("domain-chain.crt");
 
   //Challenge type to be used
-  static final ChallengeType CHALLENGE_TYPE = ChallengeType.HTTP;
+  ChallengeType CHALLENGE_TYPE = ChallengeType.DNS;
 
-  // RSA key size of generated key pairs
-  static final int KEY_SIZE = 2048;
-
-  static final Logger LOG = LoggerFactory.getLogger(Client.class);
+  Logger log = LoggerFactory.getLogger(Client.class);
 
   enum ChallengeType {HTTP, DNS}
 
@@ -50,7 +46,7 @@ public interface Client {
    *
    * @param domains Domains to get a common certificate for
    */
-  public default void fetchCertificate(Collection<String> domains) throws IOException, AcmeException {
+  default void fetchCertificate(Collection<String> domains) throws IOException, AcmeException {
     // Load the user key file. If there is no key file, create a new one.
     KeyPair userKeyPair = loadOrCreateUserKeyPair();
 
@@ -92,7 +88,7 @@ public interface Client {
       while (order.getStatus() != Status.VALID && attempts-- > 0) {
         // Did the order fail?
         if (order.getStatus() == Status.INVALID) {
-          LOG.error("Order has failed, reason: {}", order.getError());
+          log.error("Order has failed, reason: {}", order.getError());
           throw new AcmeException("Order failed... Giving up.");
         }
 
@@ -103,27 +99,22 @@ public interface Client {
         order.update();
       }
     } catch (InterruptedException ex) {
-      LOG.error("interrupted", ex);
+      log.error("interrupted", ex);
       Thread.currentThread().interrupt();
     }
 
-    // Get the certificate
     Certificate certificate = order.getCertificate();
 
-    LOG.info("Success! The certificate for domains {} has been generated!", domains);
-    LOG.info("Certificate URL: {}", certificate.getLocation());
+    log.info("Success! The certificate for domains {} has been generated!", domains);
+    log.info("Certificate URL: {}", requireNonNull(certificate, "Can't get certificate, since it's null").getLocation());
 
-    // Write a combined file containing the certificate and chain.
     try (FileWriter fw = new FileWriter(Acme.okycItCrt.toFile())) {
       certificate.writeCertificate(fw);
     }
-
-    // That's all! Configure your web server to use the DOMAIN_KEY_FILE and
-    // DOMAIN_CHAIN_FILE for the requested domains.
   }
 
   /**
-   * Loads a user key pair from {@link #USER_KEY_FILE}. If the file does not exist, a
+   * Loads a user key pair from {@link io.alpenglow.acme.Acme#ACCOUNT_OKYC_IT_PEM}. If the file does not exist, a
    * new key pair is generated and saved.
    * <p>
    * Keep this key pair in a safe place! In a production environment, you will not be
@@ -132,31 +123,20 @@ public interface Client {
    * @return User's {@link KeyPair}.
    */
   private KeyPair loadOrCreateUserKeyPair() throws IOException {
-    File userKeyFile = Acme.okycItPem.toFile();
-    if (userKeyFile.exists()) {
-      // If there is a key file, read it
-      try (FileReader fr = new FileReader(userKeyFile)) {
-        return KeyPairUtils.readKeyPair(fr);
-      }
-
-    } else {
-      // If there is none, create a new key pair and save it
-      KeyPair userKeyPair = KeyPairUtils.createECKeyPair(Acme.SECP_256_R_1);
-      try (FileWriter fw = new FileWriter(userKeyFile)) {
-        KeyPairUtils.writeKeyPair(userKeyPair, fw);
-      }
-      return userKeyPair;
-    }
+    return getKeyPair(Acme.okycItPem.toFile());
   }
 
   /**
-   * Loads a domain key pair from {@link #DOMAIN_KEY_FILE}. If the file does not exist,
+   * Loads a domain key pair from {@link io.alpenglow.acme.Acme#DOMAIN_OKYC_IT_PEM}. If the file does not exist,
    * a new key pair is generated and saved.
    *
    * @return Domain {@link KeyPair}.
    */
   private KeyPair loadOrCreateDomainKeyPair() throws IOException {
-    File domainKeyFile = Acme.okycItDomainPem.toFile();
+    return getKeyPair(Acme.okycItDomainPem.toFile());
+  }
+
+  private KeyPair getKeyPair(File domainKeyFile) throws IOException {
     if (domainKeyFile.exists()) {
       try (FileReader fr = new FileReader(domainKeyFile)) {
         return KeyPairUtils.readKeyPair(fr);
@@ -178,23 +158,24 @@ public interface Client {
    * This is a simple way of finding your {@link Account}. A better way is to get the
    * URL of your new account with {@link Account#getLocation()} and store it somewhere.
    * If you need to get access to your account later, reconnect to it via {@link
-   * Session#login(URL, KeyPair)} by using the stored location.
+   * Session#login(java.net.URL, java.security.KeyPair)} by using the stored location.
    *
    * @param session {@link Session} to bind with
    * @return {@link Account}
    */
   private Account findOrRegisterAccount(Session session, KeyPair accountKey) throws AcmeException {
     // Ask the user to accept the TOS, if server provides us with a link.
-    URI tos = session.getMetadata().getTermsOfService();
-    if (tos != null) {
-      acceptAgreement(tos);
+    URI terms = session.getMetadata().getTermsOfService();
+    if (terms != null) {
+      acceptAgreement(terms);
     }
 
     Account account = new AccountBuilder()
       .agreeToTermsOfService()
       .useKeyPair(accountKey)
       .create(session);
-    LOG.info("Registered a new user, URL: {}", account.getLocation());
+
+    log.info("Registered a new user, URL: {}", account.getLocation());
 
     return account;
   }
@@ -206,7 +187,7 @@ public interface Client {
    * @param auth {@link Authorization} to perform
    */
   private void authorize(Authorization auth) throws AcmeException {
-    LOG.info("Authorization for domain {}", auth.getIdentifier().getDomain());
+    log.info("Authorization for domain {}", auth.getIdentifier().getDomain());
 
     // The authorization is already valid. No need to process a challenge.
     if (auth.getStatus() == Status.VALID) {
@@ -234,7 +215,7 @@ public interface Client {
       while (challenge.getStatus() != Status.VALID && attempts-- > 0) {
         // Did the authorization fail?
         if (challenge.getStatus() == Status.INVALID) {
-          LOG.error("Challenge has failed, reason: {}", challenge.getError());
+          log.error("Challenge has failed, reason: {}", challenge.getError());
           throw new AcmeException("Challenge failed... Giving up.");
         }
 
@@ -245,7 +226,7 @@ public interface Client {
         challenge.update();
       }
     } catch (InterruptedException ex) {
-      LOG.error("interrupted", ex);
+      log.error("interrupted", ex);
       Thread.currentThread().interrupt();
     }
 
@@ -255,7 +236,7 @@ public interface Client {
         + auth.getIdentifier().getDomain() + ", ... Giving up.");
     }
 
-    LOG.info("Challenge has been completed. Remember to remove the validation resource.");
+    log.info("Challenge has been completed. Remember to remove the validation resource.");
     completeChallenge("Challenge has been completed.\nYou can remove the resource again now.");
   }
 
@@ -272,7 +253,7 @@ public interface Client {
    * @param auth {@link Authorization} to find the challenge in
    * @return {@link Challenge} to verify
    */
-  public default Challenge httpChallenge(Authorization auth) throws AcmeException {
+  default Challenge httpChallenge(Authorization auth) throws AcmeException {
     // Find a single http-01 challenge
     Http01Challenge challenge = auth.findChallenge(Http01Challenge.class);
     if (challenge == null) {
@@ -280,24 +261,23 @@ public interface Client {
     }
 
     // Output the challenge, wait for acknowledge...
-    LOG.info("Please create a file in your web server's base directory.");
-    LOG.info("It must be reachable at: http://{}/.well-known/acme-challenge/{}",
+    log.info("Please create a file in your web server's base directory.");
+    log.info("It must be reachable at: http://{}/.well-known/acme-challenge/{}",
       auth.getIdentifier().getDomain(), challenge.getToken());
-    LOG.info("File name: {}", challenge.getToken());
-    LOG.info("Content: {}", challenge.getAuthorization());
-    LOG.info("The file must not contain any leading or trailing whitespaces or line breaks!");
-    LOG.info("If you're ready, dismiss the dialog...");
+    log.info("File name: {}", challenge.getToken());
+    log.info("Content: {}", challenge.getAuthorization());
+    log.info("The file must not contain any leading or trailing whitespaces or line breaks!");
+    log.info("If you're ready, dismiss the dialog...");
 
-    StringBuilder message = new StringBuilder();
-    message.append("Please create a file in your web server's base directory.\n\n");
-    message.append("http://")
-      .append(auth.getIdentifier().getDomain())
-      .append("/.well-known/acme-challenge/")
-      .append(challenge.getToken())
-      .append("\n\n");
-    message.append("Content:\n\n");
-    message.append(challenge.getAuthorization());
-    acceptChallenge(message.toString());
+    String message = "Please create a file in your web server's base directory.\n\n" +
+      "http://" +
+      auth.getIdentifier().getDomain() +
+      "/.well-known/acme-challenge/" +
+      challenge.getToken() +
+      "\n\n" +
+      "Content:\n\n" +
+      challenge.getAuthorization();
+    acceptChallenge(message);
 
     return challenge;
   }
@@ -313,7 +293,7 @@ public interface Client {
    * @param auth {@link Authorization} to find the challenge in
    * @return {@link Challenge} to verify
    */
-  public default Challenge dnsChallenge(Authorization auth) throws AcmeException {
+  default Challenge dnsChallenge(Authorization auth) throws AcmeException {
     // Find a single dns-01 challenge
     Dns01Challenge challenge = auth.findChallenge(Dns01Challenge.TYPE);
     if (challenge == null) {
@@ -321,17 +301,15 @@ public interface Client {
     }
 
     // Output the challenge, wait for acknowledge...
-    LOG.info("Please create a TXT record:");
-    LOG.info("{} IN TXT {}",
-      Dns01Challenge.toRRName(auth.getIdentifier()), challenge.getDigest());
-    LOG.info("If you're ready, dismiss the dialog...");
+    log.info("Please create a TXT record:");
+    log.info("{} IN TXT {}", Dns01Challenge.toRRName(auth.getIdentifier()), challenge.getDigest());
+    log.info("If you're ready, dismiss the dialog...");
 
-    StringBuilder message = new StringBuilder();
-    message.append("Please create a TXT record:\n\n");
-    message.append(Dns01Challenge.toRRName(auth.getIdentifier()))
-      .append(" IN TXT ")
-      .append(challenge.getDigest());
-    acceptChallenge(message.toString());
+    String message = "Please create a TXT record:\n\n" +
+      Dns01Challenge.toRRName(auth.getIdentifier()) +
+      " IN TXT " +
+      challenge.getDigest();
+    acceptChallenge(message);
 
     return challenge;
   }
@@ -342,7 +320,7 @@ public interface Client {
    *
    * @param message Instructions to be shown in the dialog
    */
-  public default void acceptChallenge(String message) throws AcmeException {
+  default void acceptChallenge(String message) throws AcmeException {
     int option = JOptionPane.showConfirmDialog(null,
       message,
       "Prepare Challenge",
@@ -358,7 +336,7 @@ public interface Client {
    *
    * @param message Instructions to be shown in the dialog
    */
-  public default void completeChallenge(String message) throws AcmeException {
+  default void completeChallenge(String message) throws AcmeException {
     JOptionPane.showMessageDialog(null,
       message,
       "Complete Challenge",
@@ -371,7 +349,7 @@ public interface Client {
    *
    * @param agreement {@link URI} of the Terms of Service
    */
-  public default void acceptAgreement(URI agreement) throws AcmeException {
+  default void acceptAgreement(URI agreement) throws AcmeException {
     int option = JOptionPane.showConfirmDialog(null,
       "Do you accept the Terms of Service?\n\n" + agreement,
       "Accept ToS",
@@ -381,25 +359,19 @@ public interface Client {
     }
   }
 
-  /**
-   * Invokes this example.
-   *
-   * @param args Domains to get a certificate for
-   */
-  public static void main(String... args) {
-    LOG.info("Starting up...");
+  static void main(String... args) {
+    log.info("Starting up...");
 
     Security.addProvider(new BouncyCastleProvider());
 
-    Collection<String> domains = List.of("okyc.it", "*.okyc.it");
     try {
       new Client() {
         {
-          fetchCertificate(domains);
+          fetchCertificate(List.of("okyc.it", "*.okyc.it"));
         }
       };
     } catch (Exception ex) {
-      LOG.error("Failed to get a certificate for domains " + domains, ex);
+      log.error("Failed to get a certificate for domains " + List.of("okyc.it", "*.okyc.it"), ex);
     }
   }
 

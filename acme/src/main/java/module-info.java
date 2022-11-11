@@ -5,6 +5,5 @@ module io.alpenglow.acme {
   requires org.slf4j;
   requires java.desktop;
   requires org.apache.logging.log4j;
-  requires org.apache.logging.log4j.core;
   requires org.apache.logging.log4j.slf4j;
 }

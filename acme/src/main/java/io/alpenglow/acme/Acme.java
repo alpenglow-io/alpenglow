@@ -25,12 +25,12 @@ import static org.shredzone.acme4j.Status.*;
 
 interface Acme {
   String userhome = System.getProperty("user.home");
-  String OKYC_IT_PEM = "okyc.it.pem";
-  String OKYC_IT_DOMAIN_PEM = "okyc.it.domain.pem";
+  String ACCOUNT_OKYC_IT_PEM = "account.okyc.it.pem";
+  String DOMAIN_OKYC_IT_PEM = "domain.okyc.it.pem";
   String OKYC_IT_CSR = "okyc.it.csr";
   String OKYC_IT_CRT = "okyc.it.crt";
-  Path okycItPem = Path.of(userhome, ".ssh", OKYC_IT_PEM);
-  Path okycItDomainPem = Path.of(userhome, ".ssh", OKYC_IT_DOMAIN_PEM);
+  Path okycItPem = Path.of(userhome, ".ssh", ACCOUNT_OKYC_IT_PEM);
+  Path okycItDomainPem = Path.of(userhome, ".ssh", DOMAIN_OKYC_IT_PEM);
   Path okycItCsr = Path.of(userhome, ".ssh", OKYC_IT_CSR);
   Path okycItCrt = Path.of(userhome, ".ssh", OKYC_IT_CRT);
   String SECP_256_R_1 = "secp256r1";
