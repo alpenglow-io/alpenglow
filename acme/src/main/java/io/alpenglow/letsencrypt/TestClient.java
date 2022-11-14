@@ -1,4 +1,4 @@
-package io.alpenglow.acme;
+package io.alpenglow.letsencrypt;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.shredzone.acme4j.Account;
@@ -31,12 +31,12 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
-public interface Client {
+public interface TestClient {
 
   //Challenge type to be used
   ChallengeType CHALLENGE_TYPE = ChallengeType.DNS;
 
-  Logger log = LoggerFactory.getLogger(Client.class);
+  Logger log = LoggerFactory.getLogger(TestClient.class);
 
   enum ChallengeType {HTTP, DNS}
 
@@ -75,7 +75,7 @@ public interface Client {
     csrb.sign(domainKeyPair);
 
     // Write the CSR to a file, for later use.
-    try (Writer out = new FileWriter(Acme.okycItCsr.toFile())) {
+    try (Writer out = new FileWriter(Acme.domainCsr.toFile())) {
       csrb.write(out);
     }
 
@@ -108,13 +108,13 @@ public interface Client {
     log.info("Success! The certificate for domains {} has been generated!", domains);
     log.info("Certificate URL: {}", requireNonNull(certificate, "Can't get certificate, since it's null").getLocation());
 
-    try (FileWriter fw = new FileWriter(Acme.okycItCrt.toFile())) {
+    try (FileWriter fw = new FileWriter(Acme.domainCrt.toFile())) {
       certificate.writeCertificate(fw);
     }
   }
 
   /**
-   * Loads a user key pair from {@link io.alpenglow.acme.Acme#ACCOUNT_OKYC_IT_PEM}. If the file does not exist, a
+   * Loads a user key pair from {@link io.alpenglow.letsencrypt.Acme#ACCOUNT_PEM}. If the file does not exist, a
    * new key pair is generated and saved.
    * <p>
    * Keep this key pair in a safe place! In a production environment, you will not be
@@ -123,17 +123,17 @@ public interface Client {
    * @return User's {@link KeyPair}.
    */
   private KeyPair loadOrCreateUserKeyPair() throws IOException {
-    return getKeyPair(Acme.okycItPem.toFile());
+    return getKeyPair(Acme.accountPem.toFile());
   }
 
   /**
-   * Loads a domain key pair from {@link io.alpenglow.acme.Acme#DOMAIN_OKYC_IT_PEM}. If the file does not exist,
+   * Loads a domain key pair from {@link io.alpenglow.letsencrypt.Acme#DOMAIN_PEM}. If the file does not exist,
    * a new key pair is generated and saved.
    *
    * @return Domain {@link KeyPair}.
    */
   private KeyPair loadOrCreateDomainKeyPair() throws IOException {
-    return getKeyPair(Acme.okycItDomainPem.toFile());
+    return getKeyPair(Acme.domainPem.toFile());
   }
 
   private KeyPair getKeyPair(File domainKeyFile) throws IOException {
@@ -365,7 +365,7 @@ public interface Client {
     Security.addProvider(new BouncyCastleProvider());
 
     try {
-      new Client() {
+      new TestClient() {
         {
           fetchCertificate(List.of("okyc.it", "*.okyc.it"));
         }
