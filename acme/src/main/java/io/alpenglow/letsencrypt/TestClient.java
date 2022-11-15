@@ -4,8 +4,6 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.shredzone.acme4j.Account;
 import org.shredzone.acme4j.AccountBuilder;
 import org.shredzone.acme4j.Authorization;
-import org.shredzone.acme4j.Certificate;
-import org.shredzone.acme4j.Order;
 import org.shredzone.acme4j.Session;
 import org.shredzone.acme4j.Status;
 import org.shredzone.acme4j.challenge.Challenge;
@@ -26,13 +24,15 @@ import java.io.Writer;
 import java.net.URI;
 import java.security.KeyPair;
 import java.security.Security;
+import java.time.*;
 import java.util.Collection;
 import java.util.List;
+import java.util.TimeZone;
 
 import static java.util.Objects.requireNonNull;
 
 public interface TestClient {
-
+  ZoneId UTC = ZoneId.of("UTC");
   //Challenge type to be used
   ChallengeType CHALLENGE_TYPE = ChallengeType.DNS;
 
@@ -48,29 +48,31 @@ public interface TestClient {
    */
   default void fetchCertificate(Collection<String> domains) throws IOException, AcmeException {
     // Load the user key file. If there is no key file, create a new one.
-    KeyPair userKeyPair = loadOrCreateUserKeyPair();
+    var userKeyPair = loadOrCreateUserKeyPair();
 
     // Create a session for Let's Encrypt.
     // Use "acme://letsencrypt.org" for production server
-    Session session = new Session("acme://letsencrypt.org/staging");
+    var session = new Session("acme://letsencrypt.org");
 
     // Get the Account.
     // If there is no account yet, create a new one.
-    Account acct = findOrRegisterAccount(session, userKeyPair);
+    var acct = findOrRegisterAccount(session, userKeyPair);
 
     // Load or create a key pair for the domains. This should not be the userKeyPair!
-    KeyPair domainKeyPair = loadOrCreateDomainKeyPair();
+    var domainKeyPair = loadOrCreateDomainKeyPair();
 
     // Order the certificate
-    Order order = acct.newOrder().domains(domains).create();
+    var order = acct.newOrder()
+      .domains(domains)
+      .create();
 
     // Perform all required authorizations
-    for (Authorization auth : order.getAuthorizations()) {
+    for (var auth : order.getAuthorizations()) {
       authorize(auth);
     }
 
     // Generate a CSR for all of the domains, and sign it with the domain key pair.
-    CSRBuilder csrb = new CSRBuilder();
+    var csrb = new CSRBuilder();
     csrb.addDomains(domains);
     csrb.sign(domainKeyPair);
 
@@ -84,7 +86,7 @@ public interface TestClient {
 
     // Wait for the order to complete
     try {
-      int attempts = 10;
+      var attempts = 10;
       while (order.getStatus() != Status.VALID && attempts-- > 0) {
         // Did the order fail?
         if (order.getStatus() == Status.INVALID) {
@@ -103,12 +105,12 @@ public interface TestClient {
       Thread.currentThread().interrupt();
     }
 
-    Certificate certificate = order.getCertificate();
+    var certificate = order.getCertificate();
 
     log.info("Success! The certificate for domains {} has been generated!", domains);
     log.info("Certificate URL: {}", requireNonNull(certificate, "Can't get certificate, since it's null").getLocation());
 
-    try (FileWriter fw = new FileWriter(Acme.domainCrt.toFile())) {
+    try (var fw = new FileWriter(Acme.domainCrt.toFile())) {
       certificate.writeCertificate(fw);
     }
   }
@@ -138,12 +140,12 @@ public interface TestClient {
 
   private KeyPair getKeyPair(File domainKeyFile) throws IOException {
     if (domainKeyFile.exists()) {
-      try (FileReader fr = new FileReader(domainKeyFile)) {
+      try (var fr = new FileReader(domainKeyFile)) {
         return KeyPairUtils.readKeyPair(fr);
       }
     } else {
-      KeyPair domainKeyPair = KeyPairUtils.createECKeyPair(Acme.SECP_256_R_1);
-      try (FileWriter fw = new FileWriter(domainKeyFile)) {
+      var domainKeyPair = KeyPairUtils.createECKeyPair(Acme.SECP_256_R_1);
+      try (var fw = new FileWriter(domainKeyFile)) {
         KeyPairUtils.writeKeyPair(domainKeyPair, fw);
       }
       return domainKeyPair;
@@ -165,12 +167,12 @@ public interface TestClient {
    */
   private Account findOrRegisterAccount(Session session, KeyPair accountKey) throws AcmeException {
     // Ask the user to accept the TOS, if server provides us with a link.
-    URI terms = session.getMetadata().getTermsOfService();
+    var terms = session.getMetadata().getTermsOfService();
     if (terms != null) {
       acceptAgreement(terms);
     }
 
-    Account account = new AccountBuilder()
+    var account = new AccountBuilder()
       .agreeToTermsOfService()
       .useKeyPair(accountKey)
       .create(session);
@@ -195,7 +197,7 @@ public interface TestClient {
     }
 
     // Find the desired challenge and prepare it.
-    var challenge = switch (CHALLENGE_TYPE) {
+    Challenge challenge = switch (CHALLENGE_TYPE) {
       case HTTP -> httpChallenge(auth);
       case DNS -> dnsChallenge(auth);
       default -> throw new AcmeException("No challenge found");
@@ -211,7 +213,7 @@ public interface TestClient {
 
     // Poll for the challenge to complete.
     try {
-      int attempts = 10;
+      var attempts = 10;
       while (challenge.getStatus() != Status.VALID && attempts-- > 0) {
         // Did the authorization fail?
         if (challenge.getStatus() == Status.INVALID) {
@@ -255,7 +257,7 @@ public interface TestClient {
    */
   default Challenge httpChallenge(Authorization auth) throws AcmeException {
     // Find a single http-01 challenge
-    Http01Challenge challenge = auth.findChallenge(Http01Challenge.class);
+    var challenge = auth.findChallenge(Http01Challenge.class);
     if (challenge == null) {
       throw new AcmeException("Found no " + Http01Challenge.TYPE + " challenge, don't know what to do...");
     }
@@ -269,7 +271,7 @@ public interface TestClient {
     log.info("The file must not contain any leading or trailing whitespaces or line breaks!");
     log.info("If you're ready, dismiss the dialog...");
 
-    String message = "Please create a file in your web server's base directory.\n\n" +
+    var message = "Please create a file in your web server's base directory.\n\n" +
       "http://" +
       auth.getIdentifier().getDomain() +
       "/.well-known/acme-challenge/" +
@@ -305,7 +307,7 @@ public interface TestClient {
     log.info("{} IN TXT {}", Dns01Challenge.toRRName(auth.getIdentifier()), challenge.getDigest());
     log.info("If you're ready, dismiss the dialog...");
 
-    String message = "Please create a TXT record:\n\n" +
+    var message = "Please create a TXT record:\n\n" +
       Dns01Challenge.toRRName(auth.getIdentifier()) +
       " IN TXT " +
       challenge.getDigest();
@@ -321,7 +323,7 @@ public interface TestClient {
    * @param message Instructions to be shown in the dialog
    */
   default void acceptChallenge(String message) throws AcmeException {
-    int option = JOptionPane.showConfirmDialog(null,
+    var option = JOptionPane.showConfirmDialog(null,
       message,
       "Prepare Challenge",
       JOptionPane.OK_CANCEL_OPTION);
@@ -350,7 +352,7 @@ public interface TestClient {
    * @param agreement {@link URI} of the Terms of Service
    */
   default void acceptAgreement(URI agreement) throws AcmeException {
-    int option = JOptionPane.showConfirmDialog(null,
+    var option = JOptionPane.showConfirmDialog(null,
       "Do you accept the Terms of Service?\n\n" + agreement,
       "Accept ToS",
       JOptionPane.YES_NO_OPTION);
@@ -361,6 +363,7 @@ public interface TestClient {
 
   static void main(String... args) {
     log.info("Starting up...");
+    TimeZone.setDefault(TimeZone.getTimeZone(UTC));
 
     Security.addProvider(new BouncyCastleProvider());
 
